@@ -5,13 +5,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.rxweather.R;
-import com.example.android.rxweather.datamodel.Hours;
+import com.example.android.rxweather.datamodel.Hours_RX;
+import com.example.android.rxweather.roomdatabean.HourModel;
 import java.util.List;
 
 public class HoursListAdapter extends RecyclerView.Adapter<HoursListViewHolder> {
-    private final List<Hours> itemList;
+    private final List<HourModel> itemList;
 
-    public HoursListAdapter(List<Hours> itemList) {
+    public HoursListAdapter(List<HourModel> itemList) {
         this.itemList = itemList;
     }
 

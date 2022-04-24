@@ -1,13 +1,13 @@
 package com.example.android.rxweather;
 
-import com.example.android.rxweather.datamodel.Dto;
+import com.example.android.rxweather.datamodel.Dto_RX;
 import com.example.android.rxweather.roomdatabean.DayModel;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DayModelListConvertor {
-    public static List<DayModel> convertor(Dto dto, int weatherObjId) {
-        return dto
+    public static List<DayModel> convertor(Dto_RX dtoRX, int weatherObjId) {
+        return dtoRX
                 .weather_list_by_days()
                 .stream()
                 .map(assetsBean ->

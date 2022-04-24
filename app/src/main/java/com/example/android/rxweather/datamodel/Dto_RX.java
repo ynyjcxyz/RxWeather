@@ -10,13 +10,13 @@ import java.util.List;
 
 @GenerateTypeAdapter
 @AutoValue
-public abstract class Dto implements Parcelable {
+public abstract class Dto_RX implements Parcelable {
     @SerializedName("address")
     public abstract String address();
 
     @SerializedName("days")
-    public abstract List<Day> weather_list_by_days();
+    public abstract List<Day_RX> weather_list_by_days();
 
     @SerializedName("currentConditions")
-    public abstract CurrentConditions currentConditions();
+    public abstract CurrentConditions_RX currentConditions();
 }

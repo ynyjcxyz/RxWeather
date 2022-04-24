@@ -5,8 +5,6 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.example.android.rxweather.datamodel.Hours;
-
 import java.util.List;
 
 @Entity(tableName = "days")

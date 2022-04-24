@@ -8,7 +8,7 @@ import java.util.List;
 
 @GenerateTypeAdapter
 @AutoValue
-public abstract class Day implements Parcelable {
+public abstract class Day_RX implements Parcelable {
     @SerializedName("datetime")
     public abstract String datetime_daily();
 
@@ -25,5 +25,5 @@ public abstract class Day implements Parcelable {
     public abstract String icon_daily();
 
     @SerializedName("hours")
-    public abstract List<Hours> hourlyList();
+    public abstract List<Hours_RX> hourlyList();
 }

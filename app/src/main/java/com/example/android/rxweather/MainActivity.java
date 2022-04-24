@@ -5,20 +5,25 @@ import static com.uber.autodispose.AutoDispose.autoDisposable;
 import static com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider.from;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.example.android.rxweather.datamodel.Dto;
+import com.bumptech.glide.Glide;
+import com.example.android.rxweather.datamodel.Dto_RX;
 import com.example.android.rxweather.roomdatabean.DayModel;
 import com.example.android.rxweather.roomdatabean.DayModelWithHourModels;
 import com.example.android.rxweather.roomdatabean.DayModelWithHourModelsDao;
+import com.example.android.rxweather.roomdatabean.HourModel;
 import com.example.android.rxweather.roomdatabean.WeatherDatabase;
 import com.example.android.rxweather.roomdatabean.WeatherObj;
 import com.example.android.rxweather.roomdatabean.WeatherObjWithDays;
 import com.example.android.rxweather.roomdatabean.WeatherObjWithDaysDao;
 import com.example.android.rxweather.util.AppConstants;
+import com.example.android.rxweather.util.Convertor;
 import java.util.List;
 import java.util.stream.Collectors;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -65,20 +70,23 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(this::onSuccess, this::onError);
     }
 
-    private void onSuccess(Dto dto) {
+    private void onSuccess(Dto_RX dtoRX) {
         WeatherObj weatherObj = new WeatherObj
-                (weather_obj_id, dto.address(), CurrentConvertor.convert(dto.currentConditions()));
-        daysList = DayModelListConvertor.convertor(dto,weather_obj_id);
+                (weather_obj_id, dtoRX.address(), CurrentConvertor.convert(dtoRX.currentConditions()));
+        daysList = DayModelListConvertor.convertor(dtoRX,weather_obj_id);
         weatherObjWithDays = new WeatherObjWithDays(weatherObj,daysList);
 
-        List<DayModelWithHourModels> dayModelWithHoursList = convertor(dto);
+        insertWeatherObjToRoom(weatherObjWithDays, convertor(dtoRX));
     }
 
-    private List<DayModelWithHourModels> convertor(Dto dto) {
-        return dto
+    private List<DayModelWithHourModels> convertor(Dto_RX dtoRX) {
+        return dtoRX
                 .weather_list_by_days()
                 .stream()
-                .map(day -> new DayModelWithHourModels(DayToDayModel.dayToDayModel(day,weather_obj_id),))
+                .map(day ->
+                        new DayModelWithHourModels(DayToDayModel.rxToDayModel(day,weather_obj_id),
+                                DayToDayModel.rxToDayModel(day,weather_obj_id).hours)
+                )
                 .collect(Collectors.toList());
     }
 
@@ -88,6 +96,56 @@ public class MainActivity extends AppCompatActivity {
                 weatherObjWithDaysDao.insertWeatherObjWithDays(weatherObjWithDays));
         WeatherDatabase.databaseWriteExecutor.execute(() ->
                 dayModelWithHourModelsDao.insertData(dayModelWithHourModelsList));
+    }
+
+    private void subscribeRoomData(Observable <WeatherObjWithDays> weatherObjWithDays,
+                                   Observable <List<DayModelWithHourModels>> dayListWithHours) {
+        weatherObjWithDays
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(autoDisposable(from(this)))
+                .subscribe(this::onSubscribeSuccess_weatherObjWithDays,
+                        this::onSubscribeError_weatherObjWithDays);
+
+        dayListWithHours
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(autoDisposable(from(this)))
+                .subscribe(this::onSubscribeSuccess_dayListWithHours,
+                        this::onSubscribeError_dayListWithHours);
+    }
+
+    private void onSubscribeSuccess_dayListWithHours(List<DayModelWithHourModels> dayModelWithHourModels) {
+        List<HourModel> itemList = dayModelWithHourModels.get(0).hourModels;
+    }
+
+    private void onSubscribeError_dayListWithHours(Throwable throwable) {
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void onSubscribeSuccess_weatherObjWithDays(WeatherObjWithDays weatherObjWithDays) {
+        location_name.setText(weatherObjWithDays.weatherObj.address);
+        Glide.with(this)
+                .load(AppConstants.iconBaseUrl +
+                        AppConstants.second_set_color +
+                        weatherObjWithDays.weatherObj.currentCondition.icon_current +
+                        ".png")
+                .into(icon);
+        current_temperature
+                .setText(weatherObjWithDays.weatherObj.currentCondition.temp_current + "\u2103");
+        current_condition_string
+                .setText(weatherObjWithDays.weatherObj.currentCondition.icon_current);
+        monday_to_sunday
+                .setText(Convertor.unixTimeConvertToWeekday(
+                        weatherObjWithDays.days.get(0).datetimeEpoch_day));
+        temperature_max.setText(weatherObjWithDays.days.get(0).temp_max_day + "\u2103 \u21E1");
+        temperature_min.setText(weatherObjWithDays.days.get(0).temp_min_day + "\u2103 \u21E1");
+        List<DayModel> itemList = weatherObjWithDays.days;
+    }
+
+    private void onSubscribeError_weatherObjWithDays(Throwable throwable) {
+
     }
 
     private void onError(Throwable throwable) {

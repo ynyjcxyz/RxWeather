@@ -5,13 +5,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.rxweather.R;
-import com.example.android.rxweather.datamodel.Day;
+import com.example.android.rxweather.roomdatabean.DayModel;
+
 import java.util.List;
 
 public class DaysListAdapter extends RecyclerView.Adapter<DaysListViewHolder> {
-    private final List<Day> itemList;
+    private final List<DayModel> itemList;
 
-    public DaysListAdapter(List<Day> itemList) {
+    public DaysListAdapter(List<DayModel> itemList) {
         this.itemList = itemList;
     }
 

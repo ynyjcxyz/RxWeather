@@ -9,7 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.android.rxweather.R;
-import com.example.android.rxweather.datamodel.Hours;
+import com.example.android.rxweather.datamodel.Hours_RX;
+import com.example.android.rxweather.roomdatabean.HourModel;
 import com.example.android.rxweather.util.Convertor;
 
 public class HoursListViewHolder extends RecyclerView.ViewHolder{
@@ -26,10 +27,10 @@ public class HoursListViewHolder extends RecyclerView.ViewHolder{
     }
 
     @SuppressLint("SetTextI18n")
-    public void bindHoursData(Hours hourlyItem){
-        server_time_hourly.setText(Convertor.unixTimeConvertTo12HourFormat(hourlyItem.datetimeEpoch_hourly()));
-        temperature_hourly.setText(hourlyItem.temp_hourly()+"°");
-        Glide.with(itemView.getContext()).load(hourlyItem.icon_hourly()).into(icon_hourly);
+    public void bindHoursData(HourModel hourlyItem){
+        server_time_hourly.setText(Convertor.unixTimeConvertTo12HourFormat(hourlyItem.datetimeEpoch_hours));
+        temperature_hourly.setText(hourlyItem.temp_hours+"°");
+        Glide.with(itemView.getContext()).load(hourlyItem.icon_hours).into(icon_hourly);
     }
 
 }

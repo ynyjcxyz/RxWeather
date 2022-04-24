@@ -1,25 +1,23 @@
 package com.example.android.rxweather;
 
-import com.example.android.rxweather.datamodel.Day;
-import com.example.android.rxweather.datamodel.Dto;
-import com.example.android.rxweather.datamodel.Hours;
+import com.example.android.rxweather.datamodel.Day_RX;
+import com.example.android.rxweather.datamodel.Dto_RX;
+import com.example.android.rxweather.datamodel.Hours_RX;
+import com.example.android.rxweather.roomdatabean.HourModel;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class HourModelListConvertor {
-    public static List<String> hourModelListConvertor(Dto dto){
-        List<String> hourlyDateList =
-                dto.weather_list_by_days()
+    public static List<HourModel> hourModelListConvertor(Dto_RX dtoRX){
+        Stream<String> hourlyDateList =
+                dtoRX.weather_list_by_days()
                         .stream()
-                        .map(Day::datetime_daily)
-                        .collect(Collectors.toList());
+                        .map(Day_RX::datetime_daily);
 
-        List<Hours> hourList =
-                dto.weather_list_by_days()
+        Stream<Hours_RX> hourList =
+                dtoRX.weather_list_by_days()
                         .stream()
-                        .flatMap(f -> f.hourlyList().stream())
-                        .collect(Collectors.toList());
-
+                        .flatMap(f -> f.hourlyList().stream());
         return null;
     }
 }

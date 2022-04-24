@@ -6,12 +6,13 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 import java.util.List;
+import io.reactivex.Observable;
 
 @Dao
 public interface DayModelWithHourModelsDao {
     @Transaction
     @Query("SELECT * FROM days")
-    List<DayModelWithHourModels> getAllDayList();
+    Observable <List<DayModelWithHourModels>> getAllDayList();
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
