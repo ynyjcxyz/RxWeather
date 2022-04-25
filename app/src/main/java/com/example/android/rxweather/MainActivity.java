@@ -4,6 +4,8 @@ import static com.example.android.rxweather.retrofit.DtoRepository.getDto;
 import static com.uber.autodispose.AutoDispose.autoDisposable;
 import static com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider.from;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -11,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.android.rxweather.datamodel.Dto_RX;
+import com.example.android.rxweather.recyclerview.DaysListAdapter;
+import com.example.android.rxweather.recyclerview.HoursListAdapter;
 import com.example.android.rxweather.roomdatabean.DayModel;
 import com.example.android.rxweather.roomdatabean.DayModelWithHourModels;
 import com.example.android.rxweather.roomdatabean.DayModelWithHourModelsDao;
@@ -37,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
     private DayModelWithHourModelsDao dayModelWithHourModelsDao;
     WeatherObjWithDays weatherObjWithDays;
     int weather_obj_id = 0;
+    DaysListAdapter daysListAdapter;
+    HoursListAdapter hoursListAdapter;
+    List<HourModel> hourModelList;
+    List<DayModel> dayModelList;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +57,16 @@ public class MainActivity extends AppCompatActivity {
         dayModelWithHourModelsDao = WeatherDatabase.getDatabase(this).getDayModelDao();
 
         loadRxJavaData();
+
+        recyclerview_today_hourly.setHasFixedSize(true);
+        recyclerview_today_hourly.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
+        recyclerview_today_hourly.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        hoursListAdapter = new HoursListAdapter(hourModelList);
+        recyclerview_today_hourly.setAdapter(hoursListAdapter);
+
+        recyclerview_days.setLayoutManager(new LinearLayoutManager(this));
+        daysListAdapter = new DaysListAdapter(dayModelList);
+        recyclerview_days.setAdapter(daysListAdapter);
     }
 
     private void initView(){
@@ -68,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .as(autoDisposable(from(this)))
                 .subscribe(this::onSuccess, this::onError);
+    }
+
+    private void onError(Throwable throwable) {
+        throwable.printStackTrace();
+        throw new RuntimeException(throwable);
     }
 
     private void onSuccess(Dto_RX dtoRX) {
@@ -116,11 +141,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSubscribeSuccess_dayListWithHours(List<DayModelWithHourModels> dayModelWithHourModels) {
-        List<HourModel> itemList = dayModelWithHourModels.get(0).hourModels;
+        hourModelList = dayModelWithHourModels.get(0).hourModels;
+        hoursListAdapter.setHoursListAdapterData(hourModelList);
     }
 
     private void onSubscribeError_dayListWithHours(Throwable throwable) {
-
+        throwable.printStackTrace();
+        throw new RuntimeException(throwable);
     }
 
     @SuppressLint("SetTextI18n")
@@ -141,14 +168,11 @@ public class MainActivity extends AppCompatActivity {
                         weatherObjWithDays.days.get(0).datetimeEpoch_day));
         temperature_max.setText(weatherObjWithDays.days.get(0).temp_max_day + "\u2103 \u21E1");
         temperature_min.setText(weatherObjWithDays.days.get(0).temp_min_day + "\u2103 \u21E1");
-        List<DayModel> itemList = weatherObjWithDays.days;
+        dayModelList = weatherObjWithDays.days;
+        daysListAdapter.setDaysListAdapterData(dayModelList);
     }
 
     private void onSubscribeError_weatherObjWithDays(Throwable throwable) {
-
-    }
-
-    private void onError(Throwable throwable) {
         throwable.printStackTrace();
         throw new RuntimeException(throwable);
     }
