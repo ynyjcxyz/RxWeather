@@ -1,4 +1,4 @@
-package com.example.android.rxweather;
+package com.example.android.rxweather.util;
 
 public class RequestParam {
     public final String cityName;

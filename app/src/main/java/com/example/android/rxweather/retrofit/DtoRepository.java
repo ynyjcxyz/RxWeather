@@ -1,7 +1,7 @@
 package com.example.android.rxweather.retrofit;
 
 import static com.example.android.rxweather.retrofit.GetRetrofitObj.retrofitService;
-import com.example.android.rxweather.RequestParam;
+import com.example.android.rxweather.util.RequestParam;
 import com.example.android.rxweather.datamodel.Dto_RX;
 import io.reactivex.Observable;
 

@@ -1,7 +1,5 @@
 package com.example.android.rxweather.util;
 
-import com.example.android.rxweather.RequestParam;
-
 public class AppConstants {
     //These are weather API url parameters
     public static final RequestParam PARAM =

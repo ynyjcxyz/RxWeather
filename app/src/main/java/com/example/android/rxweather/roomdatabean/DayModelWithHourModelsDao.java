@@ -12,11 +12,11 @@ import io.reactivex.Observable;
 public interface DayModelWithHourModelsDao {
     @Transaction
     @Query("SELECT * FROM days")
-    Observable <List<DayModelWithHourModels>> getAllDayList();
+    Observable <List<DayModel>> getAllDayList();
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertData(List<DayModelWithHourModels> insertData);
+    void insertData(List<DayModel> insertData);
 
     @Transaction
     @Query("DELETE FROM days")

@@ -12,17 +12,17 @@ import io.reactivex.Observable;
 public interface WeatherObjWithDaysDao {
     @Transaction
     @Query("SELECT * FROM weather_table")
-    List<WeatherObjWithDays> getAllWeatherObj();
+    List<WeatherObj> getAllWeatherObj();
 
     @Transaction
     @Query("SELECT * FROM weather_table WHERE id = 0")
-    Observable <WeatherObjWithDays> getWeatherObjWithDays();
+    Observable <WeatherObj> getWeatherObjWithDays();
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertWeatherObjWithDays(WeatherObjWithDays weatherObjWithDays);
+    void insertWeatherObj(WeatherObj WeatherObj);
 
     @Transaction
     @Query("DELETE FROM weather_table")
-    void deleteAllWeatherObjWithDays();     // delete all weatherObjWithDays
+    void deleteAllWeatherObj();     // delete all weatherObjWithDays
 }

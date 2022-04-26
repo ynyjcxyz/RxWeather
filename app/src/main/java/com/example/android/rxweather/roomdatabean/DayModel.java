@@ -26,7 +26,12 @@ public class DayModel {
     @ColumnInfo(name = "weather_obj_id")
     public int weather_obj_id;
 
-    public DayModel(String datetime_day, long datetimeEpoch_day, double temp_max_day, double temp_min_day, String icon_day, int weather_obj_id) {
+    public DayModel(String datetime_day,
+                    long datetimeEpoch_day,
+                    double temp_max_day,
+                    double temp_min_day,
+                    String icon_day,
+                    int weather_obj_id) {
         this.datetime_day = datetime_day;
         this.datetimeEpoch_day = datetimeEpoch_day;
         this.temp_max_day = temp_max_day;
