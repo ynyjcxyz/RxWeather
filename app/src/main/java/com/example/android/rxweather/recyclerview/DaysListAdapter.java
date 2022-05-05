@@ -6,22 +6,21 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.rxweather.R;
-import com.example.android.rxweather.roomdatabean.DayModel;
+import com.example.android.rxweather.roomdatabean.DateEntity;
 import java.util.List;
 
 public class DaysListAdapter extends RecyclerView.Adapter<DaysListViewHolder> {
-    private List<DayModel> itemList;
+    private List<DateEntity> itemList;
 
-    public DaysListAdapter(List<DayModel> itemList) {
+    public DaysListAdapter(List<DateEntity> itemList) {
         this.itemList = itemList;
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setDaysListAdapterData(List<DayModel> dataList) {
+    public void setDaysListAdapterData(List<DateEntity> dataList) {
         itemList = dataList;
         notifyDataSetChanged();
     }
-
 
     @NonNull
     @Override
@@ -39,7 +38,7 @@ public class DaysListAdapter extends RecyclerView.Adapter<DaysListViewHolder> {
 
     @Override
     public int getItemCount() {
-        if(itemList.size() == 0){
+        if(itemList == null){
             return 0;
         } else{
             return itemList.size();

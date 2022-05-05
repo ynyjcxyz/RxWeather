@@ -9,16 +9,16 @@ import java.util.List;
 import io.reactivex.Observable;
 
 @Dao
-public interface DayModelWithHourModelsDao {
+public interface DateDao {
     @Transaction
-    @Query("SELECT * FROM days")
-    Observable <List<DayModel>> getAllDayList();
+    @Query("SELECT * FROM date")
+    Observable <List<DateEntity>> getAllDayList();
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertData(List<DayModel> insertData);
+    void insertData(List<DateEntity> insertData);
 
     @Transaction
-    @Query("DELETE FROM days")
-    void deleteAllDayModels();
+    @Query("DELETE FROM date")
+    void deleteAllDay();
 }

@@ -6,18 +6,19 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.rxweather.R;
-import com.example.android.rxweather.roomdatabean.HourModel;
+import com.example.android.rxweather.roomdatabean.HourEntity;
+
 import java.util.List;
 
 public class HoursListAdapter extends RecyclerView.Adapter<HoursListViewHolder> {
-    private List<HourModel> itemList;
+    private List<HourEntity> itemList;
 
-    public HoursListAdapter(List<HourModel> itemList) {
+    public HoursListAdapter(List<HourEntity> itemList) {
         this.itemList = itemList;
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setHoursListAdapterData(List<HourModel> dataList) {
+    public void setHoursListAdapterData(List<HourEntity> dataList) {
         itemList = dataList;
         notifyDataSetChanged();
     }
@@ -38,7 +39,7 @@ public class HoursListAdapter extends RecyclerView.Adapter<HoursListViewHolder> 
 
     @Override
     public int getItemCount() {
-        if (itemList.size() == 0) {
+        if (itemList == null) {
             return 0;
         } else {
             return itemList.size();

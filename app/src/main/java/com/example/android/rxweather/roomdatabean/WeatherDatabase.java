@@ -7,13 +7,13 @@ import androidx.room.RoomDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {WeatherObj.class, DayModel.class, HourModel.class}, version = 1)
+@Database(entities = {CityEntity.class, DateEntity.class, HourEntity.class}, version = 1)
 public abstract class WeatherDatabase extends RoomDatabase {
     private static WeatherDatabase INSTANCE;
 
-    public abstract WeatherObjWithDaysDao getWeatherObjDao();
-    public abstract DayModelWithHourModelsDao getDayModelDao();
-    public abstract HoursDao getHourModelDao();
+    public abstract CityDao getCityDao();
+    public abstract DateDao getDateDao();
+    public abstract HourDao getHourDao();
 
     private static final int NUMBER_OF_THREADS = 4;
     public static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);

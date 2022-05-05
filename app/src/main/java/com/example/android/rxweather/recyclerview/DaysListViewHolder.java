@@ -9,7 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.android.rxweather.R;
-import com.example.android.rxweather.roomdatabean.DayModel;
+import com.example.android.rxweather.roomdatabean.DateEntity;
+import com.example.android.rxweather.util.AppConstants;
 import com.example.android.rxweather.util.Convertor;
 
 public class DaysListViewHolder extends RecyclerView.ViewHolder{
@@ -27,11 +28,16 @@ public class DaysListViewHolder extends RecyclerView.ViewHolder{
         image_days = itemView.findViewById(R.id.image_days);
     }
     @SuppressLint("SetTextI18n")
-    public void bindDaysData(DayModel dayModel){
-        monday_to_sunday_days.setText(Convertor.unixTimeConvertToWeekday((dayModel.datetimeEpoch_day)));
-        temperature_max_days.setText(dayModel.temp_max_day +"°");
-        temperature_min_days.setText(dayModel.temp_min_day +"°");
-        Glide.with(itemView.getContext()).load(dayModel.icon_day).into(image_days);
+    public void bindDaysData(DateEntity dateEntity){
+        monday_to_sunday_days.setText(Convertor.unixTimeConvertToWeekday((dateEntity.datetimeEpochDay)));
+        temperature_max_days.setText(dateEntity.tempMaxDay +"°");
+        temperature_min_days.setText(dateEntity.tempMinDay +"°");
+        Glide.with(itemView.getContext())
+                .load(AppConstants.iconBaseUrl +
+                        AppConstants.second_set_color +
+                        dateEntity.iconDay +
+                        ".png")
+                .into(image_days);
     }
 
 }
