@@ -3,14 +3,18 @@ package com.example.android.rxweather;
 import static com.example.android.rxweather.retrofit.DtoRepository.getDto;
 import static com.uber.autodispose.AutoDispose.autoDisposable;
 import static com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider.from;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.example.android.rxweather.datamodel.Dto_RX;
 import com.example.android.rxweather.recyclerview.DaysListAdapter;
@@ -24,18 +28,20 @@ import com.example.android.rxweather.roomdatabean.HourEntity;
 import com.example.android.rxweather.roomdatabean.WeatherDatabase;
 import com.example.android.rxweather.util.AppConstants;
 import com.example.android.rxweather.util.Convertor;
+import com.example.android.rxweather.util.NetworkCheck;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
-    TextView location_name,current_temperature,current_condition_string,monday_to_sunday,
-            temperature_max,temperature_min;
+    TextView location_name, current_temperature, current_condition_string, monday_to_sunday;
     ImageView icon;
-    RecyclerView recyclerview_today_hourly,recyclerview_days;
+    RecyclerView recyclerview_today_hourly, recyclerview_days;
     DaysListAdapter daysListAdapter;
     HoursListAdapter hoursListAdapter;
     List<HourEntity> hourEntityList;
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private DateDao dateDao;
     private HourDao hourDao;
     WeatherDatabase db;
+    String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +60,19 @@ public class MainActivity extends AppCompatActivity {
         initView();
         setRecyclerView();
         prepareData();
-        loadData();
+        if (NetworkCheck.isNetworkConnected(this)) {
+            fetchDataFromCloud();
+        } else {
+            Toast.makeText(this, "Network failure! Use cache data", Toast.LENGTH_SHORT).show();
+        }
+        observeDataFromDatabase();
     }
 
-    private void loadData() {
-        fetchDataFromCloud();
-        observeDataFromDatabase();
+    private void prepareData() {
+        db = WeatherDatabase.getDatabase(this);
+        cityDao = db.getCityDao();
+        dateDao = db.getDateDao();
+        hourDao = db.getHourDao();
     }
 
     private void observeDataFromDatabase() {
@@ -68,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void observeHours() {
-        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         hourDao.observe(currentDate)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -103,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void onSubscribeSuccess_dayList(List<DateEntity> dateEntities) {
-        temperature_max.setText(dateEntities.get(0).tempMaxDay + "\u2103\u21E1");
-        temperature_min.setText(dateEntities.get(0).tempMinDay + "\u2103\u21E1");
         dateEntityList = dateEntities;
         daysListAdapter.setDaysListAdapterData(dateEntityList);
     }
@@ -157,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         String iconCurrent = dtoRX.currentConditions().icon_current();
         CityEntity cityEntity = new CityEntity(address, datetimeCurrent, datetimeEpochCurrent,
                 tempCurrent, iconCurrent);
-        List<DateEntity> dateEntities = Convertor.convertToDayList(dtoRX,address);
+        List<DateEntity> dateEntities = Convertor.convertToDayList(dtoRX, address);
         WeatherDatabase.databaseWriteExecutor.execute(() ->
                 insertData(cityEntity, dateEntities, dtoRX));
     }
@@ -165,17 +176,10 @@ public class MainActivity extends AppCompatActivity {
     private void insertData(CityEntity cityEntity, List<DateEntity> dateEntities, Dto_RX dtoRX) {
         cityDao.insertWeather(cityEntity);
         dateDao.insertData(dateEntities);
-        for(DateEntity currentDay:dateEntities){
-            List<HourEntity> hourList = Convertor.convertToHourList(dtoRX,currentDay.dayId);
+        for (DateEntity currentDay : dateEntities) {
+            List<HourEntity> hourList = Convertor.convertToHourList(dtoRX, currentDay.dayId);
             hourDao.insert(hourList);
         }
-    }
-
-    private void prepareData() {
-        db = WeatherDatabase.getDatabase(this);
-        cityDao = db.getCityDao();
-        dateDao = db.getDateDao();
-        hourDao = db.getHourDao();
     }
 
     private void setRecyclerView() {
@@ -190,13 +194,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerview_days.setAdapter(daysListAdapter);
     }
 
-    private void initView(){
+    private void initView() {
         location_name = findViewById(R.id.location_name);
         current_temperature = findViewById(R.id.current_temperature);
         current_condition_string = findViewById(R.id.current_condition_string);
         monday_to_sunday = findViewById(R.id.monday_to_sunday);
-        temperature_max = findViewById(R.id.temperature_max);
-        temperature_min = findViewById(R.id.temperature_min);
         icon = findViewById(R.id.icon);
 
         recyclerview_today_hourly = findViewById(R.id.recyclerview_today_hourly);
