@@ -87,23 +87,6 @@
                     android:textSize="20sp"
                     tools:ignore="RtlSymmetry" />
 
-                <TextView
-                    android:id="@+id/temperature_max"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toStartOf="@+id/temperature_min"
-                    android:paddingEnd="4dp"
-                    android:textSize="20sp"
-                    tools:ignore="RtlSymmetry"
-                    tools:text="20\u2103\u21E1" />
-
-                <TextView
-                    android:id="@+id/temperature_min"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:textSize="20sp"
-                    tools:text="2\u2103\u21E3" />
             </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView

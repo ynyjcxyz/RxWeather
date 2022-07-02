@@ -10,7 +10,6 @@ import io.reactivex.Observable;
 
 @Dao
 public interface CityDao {
-    @Transaction
     @Query("SELECT * FROM city")
     List<CityEntity> getAllWeatherList();
 

@@ -19,7 +19,7 @@ public class DaysListAdapter extends RecyclerView.Adapter<DaysListViewHolder> {
     @SuppressLint("NotifyDataSetChanged")
     public void setDaysListAdapterData(List<DateEntity> dataList) {
         itemList = dataList;
-        notifyDataSetChanged();
+//        notifyDataSetChanged();
     }
 
     @NonNull
