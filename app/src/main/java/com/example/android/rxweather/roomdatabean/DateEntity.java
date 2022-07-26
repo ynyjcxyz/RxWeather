@@ -48,4 +48,34 @@ public class DateEntity {
         this.iconDay = iconDay;
         this.cityName = cityName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DateEntity)) return false;
+
+        DateEntity that = (DateEntity) o;
+
+        if (datetimeEpochDay != that.datetimeEpochDay) return false;
+        if (Double.compare(that.tempMaxDay, tempMaxDay) != 0) return false;
+        if (Double.compare(that.tempMinDay, tempMinDay) != 0) return false;
+        if (!dayId.equals(that.dayId)) return false;
+        if (iconDay != null ? !iconDay.equals(that.iconDay) : that.iconDay != null) return false;
+        return cityName != null ? cityName.equals(that.cityName) : that.cityName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = dayId.hashCode();
+        result = 31 * result + (int) (datetimeEpochDay ^ (datetimeEpochDay >>> 32));
+        temp = Double.doubleToLongBits(tempMaxDay);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(tempMinDay);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (iconDay != null ? iconDay.hashCode() : 0);
+        result = 31 * result + (cityName != null ? cityName.hashCode() : 0);
+        return result;
+    }
 }

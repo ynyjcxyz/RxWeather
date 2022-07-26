@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.example.android.rxweather.datamodel.Dto_RX;
 import com.example.android.rxweather.recyclerview.DaysListAdapter;
@@ -27,13 +26,11 @@ import com.example.android.rxweather.roomdatabean.WeatherDatabase;
 import com.example.android.rxweather.util.AppConstants;
 import com.example.android.rxweather.util.Convertor;
 import com.example.android.rxweather.util.NetworkCheck;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -59,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         setRecyclerView();
         prepareData();
         if (NetworkCheck.isNetworkConnected(this)) {
-            fetchDataFromCloud();
+            fetchDataFromCloudAndInsert();
             Toast.makeText(this, "Network is connected!", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Network failure! Use cache data", Toast.LENGTH_SHORT).show();
@@ -75,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void observeHours() {
         Observable
-                .interval(0,300, TimeUnit.SECONDS)
+                .interval(0,1800, TimeUnit.SECONDS)
                 .switchMap(aLong -> hourDao.observe(currentDate))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -103,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void observeDays() {
         Observable
-                .interval(0,300, TimeUnit.SECONDS)
+                .interval(0,1800, TimeUnit.SECONDS)
                 .switchMap(aLong -> dateDao.getAllDayList())
                 .subscribeOn(Schedulers.io())
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -133,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void observeCity() {
         Observable
-                .interval(0,300, TimeUnit.SECONDS)
+                .interval(0,1800, TimeUnit.SECONDS)
                 .switchMap(aLong -> cityDao.getWeatherObj("Seattle"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -166,9 +163,9 @@ public class MainActivity extends AppCompatActivity {
         monday_to_sunday.setText(Convertor.unixTimeConvertToWeekday(cityEntity.datetimeEpochCurrent));
     }
 
-    private void fetchDataFromCloud() {
+    private void fetchDataFromCloudAndInsert() {
         Observable
-                .interval(0,300, TimeUnit.SECONDS)
+                .interval(0,1800, TimeUnit.SECONDS)
                 .switchMap(aLong -> getDto(AppConstants.PARAM))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
