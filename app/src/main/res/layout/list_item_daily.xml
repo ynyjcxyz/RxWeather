@@ -1,46 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     android:id="@+id/list_item_days"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="64dp">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/monday_to_sunday_days"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="0dp"
-        android:gravity="center_vertical"
-        android:textSize="20sp"
-        tools:ignore="RtlSymmetry"
-        tools:text="Wednesday" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="32dp">
 
-    <ImageView
-        android:id="@+id/image_days"
-        android:layout_width="64dp"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true" />
+        <TextView
+            android:id="@+id/monday_to_sunday_days"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="0dp"
+            android:gravity="center_vertical"
+            android:textSize="20sp"
+            tools:ignore="RtlSymmetry"
+            tools:text="Wednesday" />
 
-    <TextView
-        android:id="@+id/temperature_max_days"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_toStartOf="@+id/temperature_min_days"
-        android:gravity="center_vertical"
-        android:paddingEnd="4dp"
-        android:textSize="20sp"
-        tools:ignore="RtlSymmetry"
-        tools:text="20 \u2103\u21E1" />
+        <ImageView
+            android:id="@+id/image_days"
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:id="@+id/temperature_min_days"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:gravity="center_vertical"
-        android:textSize="20sp"
-        tools:ignore="RtlSymmetry"
-        tools:text="2 \u2103\u21E3" />
-</RelativeLayout>
+        <TextView
+            android:id="@+id/temperature_max_days"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/temperature_min_days"
+            android:gravity="center_vertical"
+            android:paddingEnd="4dp"
+            android:textSize="20sp"
+            tools:ignore="RtlSymmetry"
+            tools:text="20 \u2103\u21E1" />
+
+        <TextView
+            android:id="@+id/temperature_min_days"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:textSize="20sp"
+            tools:ignore="RtlSymmetry"
+            tools:text="2 \u2103\u21E3" />
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_today_hourly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp" />
+</LinearLayout>

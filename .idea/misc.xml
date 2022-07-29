@@ -3,14 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.33" />
         <entry key="..\:/AndroidSample/RxWeather/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.5315" />
         <entry key="..\:/AndroidSample/RxWeather/app/src/main/res/drawable/ic_launcher_background.xml" value="0.5315" />
         <entry key="..\:/AndroidSample/RxWeather/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/AndroidSample/RxWeather/app/src/main/res/layout/list_item_daily.xml" value="0.1" />
         <entry key="..\:/AndroidSample/RxWeather/app/src/main/res/layout/list_item_hourly.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25240384615384615" />
-        <entry key="app/src/main/res/layout/list_item_daily.xml" value="0.2462962962962963" />
-        <entry key="app/src/main/res/layout/list_item_hourly.xml" value="0.16" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/list_item_daily.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/list_item_hourly.xml" value="0.25" />
       </map>
     </option>
   </component>

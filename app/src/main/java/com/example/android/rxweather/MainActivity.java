@@ -4,7 +4,6 @@ import static com.example.android.rxweather.retrofit.DtoRepository.getDto;
 import static com.uber.autodispose.AutoDispose.autoDisposable;
 import static com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider.from;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.android.rxweather.datamodel.Dto_RX;
 import com.example.android.rxweather.recyclerview.DaysListAdapter;
-import com.example.android.rxweather.recyclerview.HoursListAdapter;
 import com.example.android.rxweather.roomdatabean.CityDao;
 import com.example.android.rxweather.roomdatabean.CityEntity;
 import com.example.android.rxweather.roomdatabean.DateDao;
@@ -36,11 +34,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
-    TextView location_name,current_temperature,current_condition_string,monday_to_sunday;
+    TextView location_name,current_temperature,current_condition_string;
     ImageView icon;
-    RecyclerView recyclerview_today_hourly,recyclerview_days;
+    RecyclerView recyclerview_days;
     DaysListAdapter daysListAdapter;
-    HoursListAdapter hoursListAdapter;
     List<HourEntity> hourEntityList;
     List<DateEntity> dateEntityList;
     private CityDao cityDao;
@@ -66,26 +63,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void observeDataFromDatabase() {
         observeCity();
-        observeDays();
-        observeHours();
-    }
-
-    private void observeHours() {
-        Observable
-                .interval(0,1800, TimeUnit.SECONDS)
-                .switchMap(aLong -> hourDao.observe(currentDate))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .as(autoDisposable(from(this)))
-                .subscribe(this::onSubscribeSuccess_hourList,
-                        this::onSubscribeError_hourList);
-
-/**        hourDao.observe(currentDate)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .as(autoDisposable(from(this)))
-                .subscribe(this::onSubscribeSuccess_hourList,
-                        this::onSubscribeError_hourList);*/
+        observeDaysAndHours();
+        //observeHours();
     }
 
     private void onSubscribeError_hourList(Throwable throwable) {
@@ -95,18 +74,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSubscribeSuccess_hourList(List<HourEntity> hourEntities) {
         hourEntityList = hourEntities;
-        hoursListAdapter.setHoursListAdapterData(hourEntityList);
+//        hoursListAdapter.setHoursListAdapterData(hourEntityList);
     }
 
-    private void observeDays() {
+    private void observeDaysAndHours() {
+        Observable
+                .interval(0,1800, TimeUnit.SECONDS)
+                .switchMap(aLong -> hourDao.observe(currentDate))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(autoDisposable(from(this)))
+                .subscribe(this::onSubscribeSuccess_hourList, this::onSubscribeError_hourList);
+
         Observable
                 .interval(0,1800, TimeUnit.SECONDS)
                 .switchMap(aLong -> dateDao.getAllDayList())
                 .subscribeOn(Schedulers.io())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .as(autoDisposable(from(this)))
-                .subscribe(this::onSubscribeSuccess_dayList,
-                        this::onSubscribeError_dayList);
+                .subscribe(this::onSubscribeSuccess_dayList, this::onSubscribeError_dayList);
+
+/**        hourDao.observe(currentDate)
+             .subscribeOn(Schedulers.io())
+             .observeOn(AndroidSchedulers.mainThread())
+             .as(autoDisposable(from(this)))
+             .subscribe(this::onSubscribeSuccess_hourList,
+             this::onSubscribeError_hourList);*/
 
 /**        dateDao.getAllDayList()
                 .subscribeOn(Schedulers.io())
@@ -125,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void onSubscribeSuccess_dayList(List<DateEntity> dateEntities) {
         dateEntityList = dateEntities;
-        daysListAdapter.setDaysListAdapterData(dateEntityList);
+        daysListAdapter.setDaysListAdapterData(dateEntityList,hourEntityList);
     }
 
     private void observeCity() {
@@ -160,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
                 .into(icon);
         current_temperature.setText(cityEntity.tempCurrent + "\u2103");
         current_condition_string.setText(cityEntity.iconCurrent);
-        monday_to_sunday.setText(Convertor.unixTimeConvertToWeekday(cityEntity.datetimeEpochCurrent));
     }
 
     private void fetchDataFromCloudAndInsert() {
@@ -218,14 +210,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setRecyclerView() {
-        recyclerview_today_hourly.setHasFixedSize(true);
-        recyclerview_today_hourly.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
-        recyclerview_today_hourly.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        hoursListAdapter = new HoursListAdapter(hourEntityList);
-        recyclerview_today_hourly.setAdapter(hoursListAdapter);
+//        recyclerview_today_hourly.setHasFixedSize(true);
+//        recyclerview_today_hourly.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
+//        recyclerview_today_hourly.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+//        hoursListAdapter = new HoursListAdapter(hourEntityList);
+//        recyclerview_today_hourly.setAdapter(hoursListAdapter);
 
         recyclerview_days.setLayoutManager(new LinearLayoutManager(this));
-        daysListAdapter = new DaysListAdapter(dateEntityList);
+        daysListAdapter = new DaysListAdapter(dateEntityList,hourEntityList);
         recyclerview_days.setAdapter(daysListAdapter);
     }
 
@@ -233,10 +225,9 @@ public class MainActivity extends AppCompatActivity {
         location_name = findViewById(R.id.location_name);
         current_temperature = findViewById(R.id.current_temperature);
         current_condition_string = findViewById(R.id.current_condition_string);
-        monday_to_sunday = findViewById(R.id.monday_to_sunday);
         icon = findViewById(R.id.icon);
 
-        recyclerview_today_hourly = findViewById(R.id.recyclerview_today_hourly);
+//        recyclerview_today_hourly = findViewById(R.id.recyclerview_today_hourly);
         recyclerview_days = findViewById(R.id.recyclerview_days);
     }
 }

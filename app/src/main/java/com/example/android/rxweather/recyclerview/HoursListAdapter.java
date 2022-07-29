@@ -1,13 +1,11 @@
 package com.example.android.rxweather.recyclerview;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.rxweather.R;
 import com.example.android.rxweather.roomdatabean.HourEntity;
-
 import java.util.List;
 
 public class HoursListAdapter extends RecyclerView.Adapter<HoursListViewHolder> {
@@ -17,10 +15,9 @@ public class HoursListAdapter extends RecyclerView.Adapter<HoursListViewHolder> 
         this.itemList = itemList;
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     public void setHoursListAdapterData(List<HourEntity> dataList) {
         itemList = dataList;
-        notifyDataSetChanged();
+//        notifyDataSetChanged();
     }
 
     @NonNull
