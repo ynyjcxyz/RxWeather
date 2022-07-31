@@ -93,11 +93,7 @@ dependencies {
 
     testImplementation ('org.mockito:mockito-core:4.6.1')
 
-    implementation "org.robolectric:robolectric:4.8"
-    implementation "org.robolectric:shadows-support-v4:3.3.2"
-    implementation "org.robolectric:shadows-multidex:4.8.1"
-
-    testImplementation "org.robolectric:robolectric:4.8" //核心包
+    testImplementation "org.robolectric:robolectric:4.8.1" //核心包
     testImplementation "org.robolectric:shadows-support-v4:3.3.2" //支持Support-v4包
     testImplementation "org.robolectric:shadows-multidex:4.8.1" //支持Multidex功能
 
