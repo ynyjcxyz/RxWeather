@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 .interval(0,1800, TimeUnit.SECONDS)
                 .switchMap(aLong -> dateDao.getAllDayList())
                 .subscribeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .as(autoDisposable(from(this)))
                 .subscribe(this::onSubscribeSuccess_dayList, this::onSubscribeError_dayList);
 
@@ -210,12 +210,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setRecyclerView() {
-//        recyclerview_today_hourly.setHasFixedSize(true);
-//        recyclerview_today_hourly.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
-//        recyclerview_today_hourly.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-//        hoursListAdapter = new HoursListAdapter(hourEntityList);
-//        recyclerview_today_hourly.setAdapter(hoursListAdapter);
-
         recyclerview_days.setLayoutManager(new LinearLayoutManager(this));
         daysListAdapter = new DaysListAdapter(dateEntityList,hourEntityList);
         recyclerview_days.setAdapter(daysListAdapter);
@@ -226,8 +220,6 @@ public class MainActivity extends AppCompatActivity {
         current_temperature = findViewById(R.id.current_temperature);
         current_condition_string = findViewById(R.id.current_condition_string);
         icon = findViewById(R.id.icon);
-
-//        recyclerview_today_hourly = findViewById(R.id.recyclerview_today_hourly);
         recyclerview_days = findViewById(R.id.recyclerview_days);
     }
 }
