@@ -24,7 +24,7 @@ public class DaysListAdapter extends RecyclerView.Adapter<DaysListViewHolder> {
     public void setDaysListAdapterData(List<DateEntity> dataList, List<HourEntity> hourList_today) {
         itemList = dataList;
         hourList = hourList_today;
-//        notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     @NonNull
