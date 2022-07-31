@@ -70,16 +70,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void observeDaysAndHours() {
 
-        Observable
-                .interval(0,1800, TimeUnit.SECONDS)
+        loadingSignal()
                 .switchMap(aLong -> dateDao.getAllDayList())
             .flatMap(this::dateModelList)
+            .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .as(autoDisposable(from(this)))
                 .subscribe(this::onSubscribeSuccess_dayList, this::onSubscribeError_dayList);
 
     }
+
+  private Observable<Long> loadingSignal() {
+    return Observable.interval(0, 3, TimeUnit.SECONDS);
+  }
 
   private Observable<List<DateModel>> dateModelList(List<DateEntity> dateList) {
     return hourDao.observe(currentDay()).map(hourList -> model(hourList,dateList) );
@@ -137,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                 .interval(0,1800, TimeUnit.SECONDS)
                 .switchMap(aLong -> getDto(AppConstants.PARAM))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .as(autoDisposable(from(this)))
                 .subscribe(this::onSuccess, this::onError);
 
