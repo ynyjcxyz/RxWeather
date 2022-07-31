@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,11 +29,7 @@ import com.example.android.rxweather.util.NetworkCheck;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -70,34 +65,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void observeDaysAndHours() {
 
-        loadingSignal()
-                .switchMap(aLong -> dateDao.getAllDayList())
-            .flatMap(this::dateModelList)
-            .distinctUntilChanged()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        modelStreaming()
                 .as(autoDisposable(from(this)))
                 .subscribe(this::onSubscribeSuccess_dayList, this::onSubscribeError_dayList);
 
     }
 
-  private Observable<Long> loadingSignal() {
-    return Observable.interval(0, 3, TimeUnit.SECONDS);
+  private Observable<List<DateModel>> modelStreaming() {
+    return new ModelStreaming(dateDao,hourDao).modelStreaming();
   }
-
-  private Observable<List<DateModel>> dateModelList(List<DateEntity> dateList) {
-    return hourDao.observe(currentDay()).map(hourList -> model(hourList,dateList) );
-  }
-
-  private List<DateModel> model(List<HourEntity> hourList, List<DateEntity> dateList) {
-    List<DateModel> result = new ArrayList<>();
-    for (int i = 0; i < dateList.size(); i++) {
-      result.add(new DateModel(dateList.get(i), i==0? hourList:null));
-    }
-    return result;
-
-  }
-
 
   private void onSubscribeError_dayList(Throwable throwable) {
         throwable.printStackTrace();
@@ -199,8 +175,4 @@ public class MainActivity extends AppCompatActivity {
         recyclerview_days = findViewById(R.id.recyclerview_days);
     }
 
-  @NonNull
-  private static String currentDay() {
-    return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-  }
 }
